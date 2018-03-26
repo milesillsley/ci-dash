@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import logo from './tools.svg';
-import Bitrise from './bitrise.js';
-import BuddyBuild from './buddybuild.js';
-import Jenkins from './jenkins.js';
+import Bitrise from './bitrise';
+import BuddyBuild from './buddybuild';
+import Jenkins from './jenkins';
+import TeamCity from './teamcity'
 import './App.css';
 
 class App extends Component {
@@ -30,6 +31,11 @@ class App extends Component {
         ***************        
         <div className="jenkins">
           <Jenkins/>
+        </div>
+
+        ***************        
+        <div className="teamCity">
+          <TeamCity/>
         </div>
       </div>
     );

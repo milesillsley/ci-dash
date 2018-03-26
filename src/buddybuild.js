@@ -1,5 +1,4 @@
 import React from 'react';
-import { BUDDYBUILD_TOKEN } from './credentials.js';
 
 export default class BuddyBuild extends React.Component {    
   constructor(props) {

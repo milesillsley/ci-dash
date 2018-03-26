@@ -1,5 +1,4 @@
 import React from 'react';
-import { JENKINS_USER, JENKINS_PASSWORD, JENKINS_TOKEN, JENKINS_API_CODE } from './credentials.js';
 
 export default class Jenkins extends React.Component {    
   constructor(props) {
@@ -8,7 +7,6 @@ export default class Jenkins extends React.Component {
       jenkinsApps: []
     };
   }
-
 
   componentDidMount() {
     this.callApi()
