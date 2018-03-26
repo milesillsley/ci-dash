@@ -9,24 +9,26 @@ export default class BuddyBuild extends React.Component {
     };
   }
 
-  componentWillMount() {
-    const url = 'https://api.buddybuild.com/v1/apps';
-    fetch(url, {
-      headers: {
-        'Authorization': ('Bearer ' + BUDDYBUILD_TOKEN)
-      }
-    }).catch(error => console.log(error))
-      .then(response => response.json())
-      .then(json => this.setState({ buddyBuildApps: json }));
+  componentDidMount() {
+    this.callApi()
+      .then(response => this.setState({ buddyBuildApps: response }))
+      .catch(err => console.log(err));
   }
+
+  callApi = async () => {
+    const response = await fetch('/api/buddyBuild');
+    const body = await response.json();
+
+    if (response.status !== 200) throw Error(body.message);
+
+    return body;
+  };
 
   render() {
     const apps = this.state.buddyBuildApps.map((item, i) => {
       return <div>{item.app_name}</div>
     })
 
-    // console.log(JSON.stringify(this.state.buddyBuildApps));        
-  
     return (
       <div id="layout-content" className="layout-content-wrapper">
         <div className="bitrise-apps">

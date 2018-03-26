@@ -9,16 +9,20 @@ export default class Bitrise extends React.Component {
     };
   }
 
-  componentWillMount() {
-    const url = 'https://api.bitrise.io/v0.1/apps';
-    fetch(url, {
-      headers: {
-        'Authorization': ('token ' + BITRISE_TOKEN)
-      }
-    }).catch(error => console.log(error))
-      .then(response => response.json())
-      .then(json => this.setState({ bitriseApps: json.data }));
+  componentDidMount() {
+    this.callApi()
+      .then(response => this.setState({ bitriseApps: response.data }))
+      .catch(err => console.log(err));
   }
+
+  callApi = async () => {
+    const response = await fetch('/api/bitrise');
+    const body = await response.json();
+
+    if (response.status !== 200) throw Error(body.message);
+
+    return body;
+  };
 
   render() {
     const apps = this.state.bitriseApps.map((item, i) => {

@@ -10,32 +10,31 @@ export default class Jenkins extends React.Component {
   }
 
 
-  componentWillMount() {
-    const url = 'http://jenkins.dev.tnl-core.ntch.co.uk/api/json';
-    fetch(url, {
-      mode: 'no-cors',
-      headers: {
-        'Authorization': `Basic ${JENKINS_API_CODE}`
-      },
-      method: 'GET'
-    })
-      .then(response => console.log(response))
-      .catch(error => console.log(error))
-      // .then(json => this.setState({ jenkinsApps: json }));
+  componentDidMount() {
+    this.callApi()
+      .then(response => this.setState({ jenkinsApps: response.jobs }))
+      .catch(err => console.log(err));
   }
+
+  callApi = async () => {
+    const response = await fetch('/api/jenkins');
+    const body = await response.json();
+
+    if (response.status !== 200) throw Error(body.message);
+
+    return body;
+  };
 
   render() {
     const apps = this.state.jenkinsApps.map((item, i) => {
       return <div>{item.name}</div>
     })
     
-    console.log(JSON.stringify(this.state.jenkinsApps));
-
     return (
       <div id="layout-content" className="layout-content-wrapper">
         <div className="bitrise-apps">
           <div>
-            Buddybuild Results:
+            Jenkins Results:
             <p>{apps}</p>
           </div>
         </div>
