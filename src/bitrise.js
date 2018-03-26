@@ -25,7 +25,7 @@ export default class Bitrise extends React.Component {
       return <div>{item.title} Status: {item.status}</div>
     })
 
-    console.log(JSON.stringify(this.state.bitriseApps));    
+    // console.log(JSON.stringify(this.state.bitriseApps));    
 
     return (
       <div id="layout-content" className="layout-content-wrapper">
