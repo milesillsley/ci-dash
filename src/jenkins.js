@@ -1,5 +1,5 @@
 import React from 'react';
-import { JENKINS_USER, JENKINS_PASSWORD } from './credentials.js';
+import { JENKINS_USER, JENKINS_PASSWORD, JENKINS_TOKEN, JENKINS_API_CODE } from './credentials.js';
 
 export default class Jenkins extends React.Component {    
   constructor(props) {
@@ -9,15 +9,19 @@ export default class Jenkins extends React.Component {
     };
   }
 
+
   componentWillMount() {
     const url = 'http://jenkins.dev.tnl-core.ntch.co.uk/api/json';
     fetch(url, {
+      mode: 'no-cors',
       headers: {
-        'Authorization': ('Basic ' + JENKINS_USER +':' + JENKINS_PASSWORD)
-      }
-    }).catch(error => console.log(error))
-      .then(response => response)
-      .then(json => this.setState({ jenkinsApps: json.jobs }));
+        'Authorization': `Basic ${JENKINS_API_CODE}`
+      },
+      method: 'GET'
+    })
+      .then(response => console.log(response))
+      .catch(error => console.log(error))
+      // .then(json => this.setState({ jenkinsApps: json }));
   }
 
   render() {

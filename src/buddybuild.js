@@ -25,7 +25,7 @@ export default class BuddyBuild extends React.Component {
       return <div>{item.app_name}</div>
     })
 
-    console.log(JSON.stringify(this.state.buddyBuildApps));        
+    // console.log(JSON.stringify(this.state.buddyBuildApps));        
   
     return (
       <div id="layout-content" className="layout-content-wrapper">
