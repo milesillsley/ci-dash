@@ -10,7 +10,7 @@ export default class TeamCity extends React.Component {
 
   componentDidMount() {
     this.callApi()
-      .then(response => this.setState({ teamCityApps: response.build }))
+      .then(response => this.setState({ teamCityApps: response }))
       .catch(err => console.log(err));
   }
 
@@ -25,7 +25,7 @@ export default class TeamCity extends React.Component {
 
   render() {
     const apps = this.state.teamCityApps.map((item, i) => {
-      return <div>{item.buildTypeId}{item.status}</div>
+      return <div>{item.name}: {item.status}</div>
     })
     
     return (

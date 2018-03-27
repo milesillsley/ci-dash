@@ -1,9 +1,9 @@
 import express from 'express';
 import request from 'superagent';
-import { JENKINS_API_CODE } from '../credentials';
 import { populateBitriseBuildList } from './bitrise';
 import { populateBuddyBuildBuildList } from './buddyBuild';
 import { populateJenkinsBuildList } from './jenkins';
+import { populateTeamcityBuildList } from './teamcity';
 
 var app = express();
 var router = express.Router(); 
@@ -23,16 +23,10 @@ router.get('/buddyBuild', async (req, res) => {
     res.json(buildList);
 })
 
-router.get('/teamcity', (req, res) => {
-    const url = 'http://teamcity.tnl-core.ntch.co.uk/httpAuth/app/rest/builds';
-    const base64Token = 'dGltZXMtdG9vbHM6VG9vbHMxMjMh';
-
-    request.get(url)
-        .set('Authorization', `Basic: ${base64Token}`)
-        .set('Accept', 'application/json')
-        .then(response => res.json(response.body))
+router.get('/teamcity', async (req, res) => {
+    let buildList = await populateTeamcityBuildList();
+    res.json(buildList);
 })
 
 app.use('/api', router);
-
 app.listen(8080, console.log("APP RUNNING ON http://localhost:8080"));
