@@ -1,7 +1,8 @@
 import express from 'express';
 import request from 'superagent';
-import { JENKINS_API_CODE, BUDDYBUILD_TOKEN } from '../credentials';
+import { JENKINS_API_CODE } from '../credentials';
 import { populateBitriseBuildList } from './bitrise';
+import { populateBuddyBuildBuildList } from './buddyBuild';
 
 var app = express();
 var router = express.Router(); 
@@ -20,38 +21,8 @@ router.get('/bitrise', async (req, res) => {
 })
 
 router.get('/buddyBuild', async (req, res) => {
-    const url = 'https://api.buddybuild.com/v1/apps';
-
-    const buildJobsData = async () => {
-        return request.get(url)
-            .set('Authorization', `Bearer ${BUDDYBUILD_TOKEN}`)
-            .then(response => response.body)
-    }
-
-    const buildJobStatus = async (buildId) => {
-        return request.get(`https://api.buddybuild.com/v1/apps/${buildId}/builds/latest`)
-            .set('Authorization', `Bearer ${BUDDYBUILD_TOKEN}`)
-            .then(response => response.body.build_status)
-    }
-
-    async function populateBuildList() {
-        let buildJobDataList = await buildJobsData();
-        let buildList = [];        
-        for (const build of buildJobDataList) {
-            const buildStatus = await buildJobStatus(build._id);
-            
-            const buildName = build.app_name;
-            let buildObject = {
-                name: buildName,
-                status: buildStatus
-            };
-
-            buildList.push(buildObject);
-        }
-        res.json(buildList)
-    }
-    
-    await populateBuildList();
+    let buildList = await populateBuddyBuildBuildList();
+    res.json(buildList);
 })
 
 router.get('/teamcity', (req, res) => {

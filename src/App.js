@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './tools.svg';
 import Bitrise from './bitrise';
-import BuddyBuild from './buddybuild';
+import BuddyBuild from './buddyBuild';
 import Jenkins from './jenkins';
 import TeamCity from './teamcity'
 import './App.css';

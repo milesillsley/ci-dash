@@ -17,7 +17,6 @@ export default class BuddyBuild extends React.Component {
   callApi = async () => {
     const response = await fetch('/api/buddyBuild');
     const body = await response.json();
-    console.log(body);
     if (response.status !== 200) throw Error(body.message);
 
     return body;

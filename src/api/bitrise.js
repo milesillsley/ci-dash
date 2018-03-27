@@ -1,23 +1,25 @@
 import request from 'superagent';
 import { BITRISE_TOKEN } from '../credentials';
 
-const buildBitriseJobsData = async () => {
-    return request.get('https://api.bitrise.io/v0.1/apps')
+const baseUrl = 'https://api.bitrise.io/v0.1/apps';
+
+const buildJobsData = async () => {
+    return request.get(baseUrl)
         .set('Authorization', `token ${BITRISE_TOKEN}`)
         .then(response => response.body.data)
 }
 
-const buildBitriseJobStatus = async (buildId) => {
-    return request.get(`https://api.bitrise.io/v0.1/apps/${buildId}/builds?limit=1`)
+const buildJobStatus = async (buildId) => {
+    return request.get(`${baseUrl}/${buildId}/builds?limit=1`)
         .set('Authorization', `token ${BITRISE_TOKEN}`)
         .then(response => response.body.data)
 }
 
 export const populateBitriseBuildList = async () => {
-    let buildJobDataList = await buildBitriseJobsData();        
+    let buildJobDataList = await buildJobsData();        
     let buildList = [];        
     for (const build of buildJobDataList) {
-        const buildStatus = await buildBitriseJobStatus(build.slug);
+        const buildStatus = await buildJobStatus(build.slug);
         const buildName = build.title;
         let buildObject = {
             name: buildName,
