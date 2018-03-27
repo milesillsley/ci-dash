@@ -17,7 +17,7 @@ export default class BuddyBuild extends React.Component {
   callApi = async () => {
     const response = await fetch('/api/buddyBuild');
     const body = await response.json();
-
+    console.log(body);
     if (response.status !== 200) throw Error(body.message);
 
     return body;
@@ -25,7 +25,7 @@ export default class BuddyBuild extends React.Component {
 
   render() {
     const apps = this.state.buddyBuildApps.map((item, i) => {
-      return <div>{item.app_name}</div>
+      return <div>{item.name}: {item.status}</div>
     })
 
     return (

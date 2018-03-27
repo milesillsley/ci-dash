@@ -14,7 +14,6 @@ router.get('/jenkins', (req, res) => {
 })
 
 router.get('/bitrise', async (req, res) => {
-    let buildList = [];
 
     const buildJobsData = async () => {
         return request.get('https://api.bitrise.io/v0.1/apps')
@@ -22,7 +21,7 @@ router.get('/bitrise', async (req, res) => {
             .then(response => response.body.data)
     }
     
-    let buildJobStatus = async (buildId) => {
+    const buildJobStatus = async (buildId) => {
         return request.get(`https://api.bitrise.io/v0.1/apps/${buildId}/builds?limit=1`)
             .set('Authorization', `token ${BITRISE_TOKEN}`)
             .then(response => response.body.data)
@@ -30,7 +29,8 @@ router.get('/bitrise', async (req, res) => {
 
     let buildJobDataList = await buildJobsData();
 
-    async function populateBuildList() {
+    const populateBuildList = async () => {
+        let buildList = [];        
         for (const build of buildJobDataList) {
             const buildStatus = await buildJobStatus(build.slug);
             const buildName = build.title;
@@ -47,20 +47,39 @@ router.get('/bitrise', async (req, res) => {
     await populateBuildList();
 })
 
-router.get('/buddyBuild', (req, res) => {
+router.get('/buddyBuild', async (req, res) => {
     const url = 'https://api.buddybuild.com/v1/apps';
 
-    request.get(url)
-        .set('Authorization', `Bearer ${BUDDYBUILD_TOKEN}`)
-        .then(response => res.json(response.body))
-})
+    const buildJobsData = async () => {
+        return request.get(url)
+            .set('Authorization', `Bearer ${BUDDYBUILD_TOKEN}`)
+            .then(response => response.body)
+    }
 
-router.get('/buddyBuild/{buildslug}', (req, res) => {
-    const url = 'https://api.buddybuild.com/v1/builds/{buildSlug}';
+    const buildJobStatus = async (buildId) => {
+        return request.get(`https://api.buddybuild.com/v1/apps/${buildId}/builds/latest`)
+            .set('Authorization', `Bearer ${BUDDYBUILD_TOKEN}`)
+            .then(response => response.body.build_status)
+    }
 
-    request.get(url)
-        .set('Authorization', `Bearer ${BUDDYBUILD_TOKEN}`)
-        .then(response => res.json(response.body))
+    async function populateBuildList() {
+        let buildJobDataList = await buildJobsData();
+        let buildList = [];        
+        for (const build of buildJobDataList) {
+            const buildStatus = await buildJobStatus(build._id);
+            
+            const buildName = build.app_name;
+            let buildObject = {
+                name: buildName,
+                status: buildStatus
+            };
+
+            buildList.push(buildObject);
+        }
+        res.json(buildList)
+    }
+    
+    await populateBuildList();
 })
 
 router.get('/teamcity', (req, res) => {
