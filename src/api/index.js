@@ -1,6 +1,7 @@
 import express from 'express';
-import { JENKINS_API_CODE, BITRISE_TOKEN, BUDDYBUILD_TOKEN } from './credentials.js';
 import request from 'superagent';
+import { JENKINS_API_CODE, BUDDYBUILD_TOKEN } from '../credentials';
+import { populateBitriseBuildList } from './bitrise';
 
 var app = express();
 var router = express.Router(); 
@@ -14,37 +15,8 @@ router.get('/jenkins', (req, res) => {
 })
 
 router.get('/bitrise', async (req, res) => {
-
-    const buildJobsData = async () => {
-        return request.get('https://api.bitrise.io/v0.1/apps')
-            .set('Authorization', `token ${BITRISE_TOKEN}`)
-            .then(response => response.body.data)
-    }
-    
-    const buildJobStatus = async (buildId) => {
-        return request.get(`https://api.bitrise.io/v0.1/apps/${buildId}/builds?limit=1`)
-            .set('Authorization', `token ${BITRISE_TOKEN}`)
-            .then(response => response.body.data)
-    }
-
-    let buildJobDataList = await buildJobsData();
-
-    const populateBuildList = async () => {
-        let buildList = [];        
-        for (const build of buildJobDataList) {
-            const buildStatus = await buildJobStatus(build.slug);
-            const buildName = build.title;
-            let buildObject = {
-                name: buildName,
-                status: buildStatus[0].status_text
-            };
-
-            buildList.push(buildObject);
-        }
-        res.json(buildList)
-    }
-    
-    await populateBuildList();
+    let buildList = await populateBitriseBuildList();
+    res.json(buildList);
 })
 
 router.get('/buddyBuild', async (req, res) => {

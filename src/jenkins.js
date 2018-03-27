@@ -25,7 +25,7 @@ export default class Jenkins extends React.Component {
 
   render() {
     const apps = this.state.jenkinsApps.map((item, i) => {
-      return <div>{item.name}</div>
+      return <div>{item.name}: {item.color}</div>
     })
     
     return (
