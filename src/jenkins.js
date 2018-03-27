@@ -10,7 +10,7 @@ export default class Jenkins extends React.Component {
 
   componentDidMount() {
     this.callApi()
-      .then(response => this.setState({ jenkinsApps: response.jobs }))
+      .then(response => this.setState({ jenkinsApps: response }))
       .catch(err => console.log(err));
   }
 
@@ -25,7 +25,7 @@ export default class Jenkins extends React.Component {
 
   render() {
     const apps = this.state.jenkinsApps.map((item, i) => {
-      return <div>{item.name}: {item.color}</div>
+      return <div>{item.name}: {item.status}</div>
     })
     
     return (

@@ -20,13 +20,11 @@ export const populateBuddyBuildBuildList = async () => {
     let buildList = [];        
     for (const build of buildJobDataList) {
         const buildStatus = await buildJobStatus(build._id);
-        
         const buildName = build.app_name;
         let buildObject = {
             name: buildName,
             status: buildStatus
         };
-
         buildList.push(buildObject);
     }
     return buildList

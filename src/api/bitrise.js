@@ -19,11 +19,11 @@ export const populateBitriseBuildList = async () => {
     let buildJobDataList = await buildJobsData();        
     let buildList = [];        
     for (const build of buildJobDataList) {
-        const buildStatus = await buildJobStatus(build.slug);
+        const buildStatus = (await buildJobStatus(build.slug))[0].status_text;
         const buildName = build.title;
         let buildObject = {
             name: buildName,
-            status: buildStatus[0].status_text
+            status: buildStatus
         };
 
         buildList.push(buildObject);

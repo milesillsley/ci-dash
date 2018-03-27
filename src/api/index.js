@@ -3,16 +3,14 @@ import request from 'superagent';
 import { JENKINS_API_CODE } from '../credentials';
 import { populateBitriseBuildList } from './bitrise';
 import { populateBuddyBuildBuildList } from './buddyBuild';
+import { populateJenkinsBuildList } from './jenkins';
 
 var app = express();
 var router = express.Router(); 
 
-router.get('/jenkins', (req, res) => {
-    const url = 'http://jenkins.dev.tnl-core.ntch.co.uk/api/json';
-
-    request.get(url)
-        .set('Authorization', `Basic ${JENKINS_API_CODE}`)
-        .then(response => res.json(response.body))
+router.get('/jenkins', async (req, res) => {
+    let buildList = await populateJenkinsBuildList();
+    res.json(buildList);
 })
 
 router.get('/bitrise', async (req, res) => {
